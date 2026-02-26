@@ -14,7 +14,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
         <!-- Favicon -->
-    <link href="{{asset('asset/img')}}/favicon.ico" rel="icon">
+    <link href="{{asset('assets/img')}}/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,37 +26,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="{{asset('asset/lib')}}animate/animate.min.css" rel="stylesheet">
-    <link href="{{asset('asset/lib')}}owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="{{asset('asset/lib')}}tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="{{asset('assets/lib')}}/animate/animate.min.css" rel="stylesheet">
+    <link href="{{asset('assets/lib')}}/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="{{asset('assets/lib')}}/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="{{asset('asset/css')}}/bootstrap.min.css" rel="stylesheet">
+    <link href="{{asset('assets/css')}}/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="{{asset('asset/css')}}/style.css" rel="stylesheet">
+    <link href="{{asset('assets/css')}}/style.css" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
     <div id="app">
-        {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+        <!-- Navbar & Hero Start -->
+        <div class="container-xxl position-relative p-0">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
+                <a href="{{ url('/') }}" class="navbar-brand p-0">
+                    <h1 class="text-primary m-0"><i class="fa fa-utensils me-3"></i>Restoran</h1>
+                    <!-- <img src="img/logo.png" alt="Logo"> -->
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars"></span>
                 </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto py-0 pe-4">
+                        <a href="{{ url('/') }}" class="nav-item nav-link {{ Request::is('/') ? 'active' : '' }}">Home</a>
+                        <a href="{{ url('/about') }}" class="nav-item nav-link">About</a>
+                        <a href="{{ url('/service') }}" class="nav-item nav-link">Service</a>
+                        <a href="{{ url('/menu') }}" class="nav-item nav-link">Menu</a>
+                        <a href="{{ url('/cart') }}" class="nav-item nav-link"><i class="fa-sharp fa-solid fa-cart-shopping"></i>Cart</a>
+                        <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact</a>
+                    </div>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
                         @guest
@@ -92,34 +96,6 @@
                         @endguest
                     </ul>
                 </div>
-            </div>
-        </nav> --}}
-
-                <!-- Navbar & Hero Start -->
-        <div class="container-xxl position-relative p-0">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
-                <a href="" class="navbar-brand p-0">
-                    <h1 class="text-primary m-0"><i class="fa fa-utensils me-3"></i>Restoran</h1>
-                    <!-- <img src="img/logo.png" alt="Logo"> -->
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="fa fa-bars"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto py-0 pe-4">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="about.html" class="nav-item nav-link">About</a>
-                        <a href="service.html" class="nav-item nav-link">Service</a>
-                        <a href="menu.html" class="nav-item nav-link">Menu</a>
-                        <a href="cart.html" class="nav-item nav-link"><i class="fa-sharp fa-solid fa-cart-shopping"></i>Cart</a>
-
-
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
-                        <a href="login.html" class="nav-item nav-link">Login</a>
-                        <a href="register.html" class="nav-item nav-link">Register</a>
-                    </div>
-
-                </div>
             </nav>
 
             <div class="container-xxl py-5 bg-dark hero-header mb-5">
@@ -131,7 +107,7 @@
                             <a href="" class="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</a>
                         </div>
                         <div class="col-lg-6 text-center text-lg-end overflow-hidden">
-                            <img class="img-fluid" src="img/hero.png" alt="">
+                            <img class="img-fluid" src="{{ asset('assets/img/hero.png') }}" alt="">
                         </div>
                     </div>
                 </div>
@@ -208,20 +184,20 @@
             </div>
         </div>
         <!-- Footer End -->
-        
+
         <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{asset('asset/lib')}}wow/wow.min.js"></script>
-    <script src="{{asset('asset/lib')}}easing/easing.min.js"></script>
-    <script src="{{asset('asset/lib')}}waypoints/waypoints.min.js"></script>
-    <script src="{{asset('asset/lib')}}counterup/counterup.min.js"></script>
-    <script src="{{asset('asset/lib')}}owlcarousel/owl.carousel.min.js"></script>
-    <script src="{{asset('asset/lib')}}tempusdominus/js/moment.min.js"></script>
-    <script src="{{asset('asset/lib')}}tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="{{asset('asset/lib')}}tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="{{asset('assets/lib')}}/wow/wow.min.js"></script>
+    <script src="{{asset('assets/lib')}}/easing/easing.min.js"></script>
+    <script src="{{asset('assets/lib')}}/waypoints/waypoints.min.js"></script>
+    <script src="{{asset('assets/lib')}}/counterup/counterup.min.js"></script>
+    <script src="{{asset('assets/lib')}}/owlcarousel/owl.carousel.min.js"></script>
+    <script src="{{asset('assets/lib')}}/tempusdominus/js/moment.min.js"></script>
+    <script src="{{asset('assets/lib')}}/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="{{asset('assets/lib')}}/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="{{asset('asset/js')}}/main.js"></script>
+    <script src="{{asset('assets/js')}}/main.js"></script>
 </body>
 </html>
