@@ -11,4 +11,14 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor': ['axios'],
+                    'bootstrap': ['bootstrap'],
+                },
+            },
+        },
+    },
 });
