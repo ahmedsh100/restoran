@@ -1,12 +1,6 @@
-import 'bootstrap/js/dist/util';
-import 'bootstrap/js/dist/alert';
-import 'bootstrap/js/dist/button';
-import 'bootstrap/js/dist/carousel';
-import 'bootstrap/js/dist/collapse';
-import 'bootstrap/js/dist/dropdown';
-import 'bootstrap/js/dist/modal';
-import 'bootstrap/js/dist/popover';
-import 'bootstrap/js/dist/tooltip';
+import * as bootstrap from 'bootstrap';
+
+window.bootstrap = bootstrap;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

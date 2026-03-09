@@ -206,6 +206,7 @@
                                             <small class="fst-italic">{{$food->description}}</small>
                                         </div>
                                     </div>
+                                    @endforeach
                                 </div>
                                 <div class="col-lg-6">
                                     @foreach ($dinner as $food)
@@ -219,6 +220,7 @@
                                             <small class="fst-italic">{{$food->description}}</small>
                                         </div>
                                     </div>
+                                    @endforeach
                                 </div>
 
                             </div>
@@ -536,6 +538,5 @@
             </div>
         </div>
         <!-- Testimonial End -->
-
 
 @endsection
