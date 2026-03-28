@@ -25,4 +25,10 @@ class FoodController extends Controller
         }
         }
 
-    }
+        public function detail(Request $request, $food_id){
+            $food = Food::find($food_id);
+            if($food){
+                return view("detail", compact("food"));
+            }
+        }
+}
