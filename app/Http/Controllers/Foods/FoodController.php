@@ -14,4 +14,15 @@ class FoodController extends Controller
         $dinner = Food::where("category", "Dessert")->take(4)->get();
         return view("home", compact("breakfast", "lunch", "dinner"));
     }
-}
+
+    public function addToCart(Request $request){
+        $food = Food::find($request->food_id);
+        if($food){
+            $request->user()->cart()->attach($food->id, [
+                "quantity" => $request->quantity,
+                "price" => $food->price,
+            ]);
+        }
+        }
+
+    }

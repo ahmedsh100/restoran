@@ -19,4 +19,6 @@ Route::get('/', [FoodController::class, 'index']);
 
 Auth::routes();
 
-Route::get('/home', [FoodController::class, 'index']);
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::get('/food/add-to-cart', [FoodController::class, 'addToCart'])->name('food.addTo-cart');
