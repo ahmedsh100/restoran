@@ -22,3 +22,4 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/food/add-to-cart', [FoodController::class, 'addToCart'])->name('food.addTo-cart');
+Route::post('/food/detail/{food_id}', [FoodController::class, 'detail'])->name('food.detail');
