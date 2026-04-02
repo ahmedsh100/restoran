@@ -64,19 +64,19 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ url('/') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('menu') }}" class="btn btn-outline-secondary">
                                 <i class="fa fa-arrow-left me-2"></i>Continue Shopping
                             </a>
-                            <button class="btn btn-primary" disabled>
-                                <i class="fa fa-credit-card me-2"></i>Checkout (Coming Soon)
-                            </button>
+                            <a href="{{ route('checkout') }}" class="btn btn-primary">
+                                <i class="fa fa-credit-card me-2"></i>Proceed to Checkout
+                            </a>
                         </div>
                     @else
                         <div class="text-center py-5">
                             <i class="fa fa-cart-shopping fa-4x text-muted mb-3"></i>
                             <h5 class="text-muted">Your cart is empty</h5>
                             <p class="text-muted">Add some delicious items to get started!</p>
-                            <a href="{{ url('/') }}" class="btn btn-primary mt-2">
+                            <a href="{{ route('menu') }}" class="btn btn-primary mt-2">
                                 <i class="fa fa-utensils me-2"></i>Browse Menu
                             </a>
                         </div>

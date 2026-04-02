@@ -53,11 +53,11 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0 pe-4">
-                        <a href="{{ url('/') }}" class="nav-item nav-link {{ Request::is('/') ? 'active' : '' }}">Home</a>
-                        <a href="{{ url('/about') }}" class="nav-item nav-link">About</a>
-                        <a href="{{ url('/service') }}" class="nav-item nav-link">Service</a>
-                        <a href="{{ url('/menu') }}" class="nav-item nav-link">Menu</a>
-                        <a href="{{ route('cart.index') }}" class="nav-item nav-link position-relative">
+                        <a href="{{ route('home.index') }}" class="nav-item nav-link {{ request()->routeIs('home.index') ? 'active' : '' }}">Home</a>
+                        <a href="{{ route('about') }}" class="nav-item nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+                        <a href="{{ route('service') }}" class="nav-item nav-link {{ request()->routeIs('service') ? 'active' : '' }}">Service</a>
+                        <a href="{{ route('menu') }}" class="nav-item nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Menu</a>
+                        <a href="{{ route('cart.index') }}" class="nav-item nav-link {{ request()->routeIs('cart.*') ? 'active' : '' }} position-relative">
                             <i class="fa-sharp fa-solid fa-cart-shopping"></i>Cart
                             @if($cartCount > 0)
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
@@ -65,7 +65,14 @@
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact</a>
+                        <a href="{{ route('contact') }}" class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        @auth
+                        @if(Auth::user()->is_admin)
+                        <a href="{{ route('admin.dashboard') }}" class="nav-item nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">
+                            <i class="fa fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                        @endif
+                        @endauth
                     </div>
 
                     <ul class="navbar-nav ms-auto">
@@ -89,6 +96,16 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    @if(Auth::user()->is_admin)
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="fa fa-tachometer-alt me-2"></i>Admin Dashboard
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    @endif
+                                    <a class="dropdown-item" href="{{ route('my.orders') }}">
+                                        <i class="fa fa-list me-2"></i>My Orders
+                                    </a>
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

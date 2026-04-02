@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Food\Food;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
-        return view('home');
+        $breakfast = Food::where('category', 'Main Course')->take(4)->get();
+        $lunch = Food::where('category', 'Appetizer')->take(4)->get();
+        $dinner = Food::where('category', 'Dessert')->take(4)->get();
+
+        return view('home', compact('breakfast', 'lunch', 'dinner'));
     }
 }
