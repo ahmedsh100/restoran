@@ -175,89 +175,72 @@
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane fade show p-0 active">
                             <div class="row g-4">
-                                @foreach ($breakfast as $food)
+                                @forelse ($breakfast as $food)
                                 <div class="col-lg-6">
-                                    <div class="d-flex align-items-center">
-                                        <img class="flex-shrink-0 img-fluid rounded" src="{{asset('assets/img/'.$food->image.'')}}" alt="" style="width: 80px;">
+                                    <div class="d-flex align-items-center food-item-hover">
+                                        <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('storage/'.$food->image) }}" alt="{{ $food->name }}" style="width: 80px; height: 80px; object-fit: cover;" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
                                         <div class="w-100 d-flex flex-column text-start ps-4">
                                             <h5 class="d-flex justify-content-between border-bottom pb-2">
                                                 <span>{{ $food->name }}</span>
-                                                <span class="text-primary">{{ $food->price }}</span>
+                                                <span class="text-primary">${{ number_format($food->price, 2) }}</span>
                                             </h5>
-                                            <small class="fst-italic">{{ $food->description }}</small>
+                                            <small class="fst-italic">{{ Str::limit($food->description, 80) }}</small>
                                             <div class="d-flex gap-2 mt-2">
-                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-sm btn-outline-primary">Details</a>
                                                 @auth
                                                 <form action="{{ route('cart.add', $food->id) }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="quantity" value="1">
-                                                    <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                                    <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
                                                 </form>
                                                 @else
-                                                <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                                <a href="{{ route('login') }}" class="btn btn-sm btn-primary">Login to Order</a>
                                                 @endauth
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                @endforeach
+                                @empty
+                                <div class="col-12 text-center py-4">
+                                    <i class="fa fa-utensils fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No items available yet.</p>
+                                </div>
+                                @endforelse
                             </div>
                         </div>
                         <div id="tab-2" class="tab-pane fade show p-0">
                             <div class="row g-4">
-                               @foreach ($lunch as $food)
+                               @forelse ($lunch as $food)
                                 <div class="col-lg-6">
-                                    <div class="d-flex align-items-center">
-                                        <img class="flex-shrink-0 img-fluid rounded" src="{{asset('assets/img/'.$food->image.'')}}" alt="" style="width: 80px;">
+                                    <div class="d-flex align-items-center food-item-hover">
+                                        <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('storage/'.$food->image) }}" alt="{{ $food->name }}" style="width: 80px; height: 80px; object-fit: cover;" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
                                         <div class="w-100 d-flex flex-column text-start ps-4">
                                             <h5 class="d-flex justify-content-between border-bottom pb-2">
                                                 <span>{{$food->name}}</span>
-                                                <span class="text-primary">{{$food->price}}</span>
+                                                <span class="text-primary">${{ number_format($food->price, 2) }}</span>
                                             </h5>
-                                            <small class="fst-italic">{{$food->description}}</small>
+                                            <small class="fst-italic">{{ Str::limit($food->description, 80) }}</small>
                                             <div class="d-flex gap-2 mt-2">
-                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-sm btn-outline-primary">Details</a>
                                                 @auth
                                                 <form action="{{ route('cart.add', $food->id) }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="quantity" value="1">
-                                                    <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                                    <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
                                                 </form>
                                                 @else
-                                                <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                                <a href="{{ route('login') }}" class="btn btn-sm btn-primary">Login to Order</a>
                                                 @endauth
                                             </div>
                                         </div>
                                     </div>
-                                    @endforeach
                                 </div>
-                                <div class="col-lg-6">
-                                    @foreach ($dinner as $food)
-                                    <div class="d-flex align-items-center">
-                                        <img class="flex-shrink-0 img-fluid rounded" src="{{asset('assets/img/'.$food->image.'')}}" alt="" style="width: 80px;">
-                                        <div class="w-100 d-flex flex-column text-start ps-4">
-                                            <h5 class="d-flex justify-content-between border-bottom pb-2">
-                                                <span>{{$food->name}}</span>
-                                                <span class="text-primary">{{$food->price}}</span>
-                                            </h5>
-                                            <small class="fst-italic">{{$food->description}}</small>
-                                            <div class="d-flex gap-2 mt-2">
-                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
-                                                @auth
-                                                <form action="{{ route('cart.add', $food->id) }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="quantity" value="1">
-                                                    <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
-                                                </form>
-                                                @else
-                                                <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
-                                                @endauth
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
+                                @empty
+                                <div class="col-12 text-center py-4">
+                                    <i class="fa fa-utensils fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No items available yet.</p>
                                 </div>
-
+                                @endforelse
                             </div>
                         </div>
                         {{-- <div id="tab-3" class="tab-pane fade show p-0">

@@ -1,89 +1,82 @@
 @extends('layouts.app')
 
+@section('title', 'Shopping Cart')
+
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="fa fa-cart-shopping me-2"></i>Your Cart</h4>
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h5 class="section-title ff-secondary text-center text-primary fw-normal">Cart</h5>
+            <h1 class="mb-5">Your Shopping Cart</h1>
+        </div>
+
+        @if($cartItems->count() > 0)
+        <div class="row g-5">
+            <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="order-summary p-4">
+                    @foreach($cartItems as $item)
+                    <div class="order-item">
+                        <img src="{{ asset('storage/'.$item->food->image) }}" alt="{{ $item->food->name }}" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-1">{{ $item->food->name }}</h6>
+                            <small class="text-muted">{{ $item->food->category }}</small>
+                            <div class="d-flex align-items-center mt-2">
+                                <span class="text-muted me-3">Qty: {{ $item->quantity }}</span>
+                                <span class="text-primary fw-bold">${{ number_format($item->price, 2) }} each</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="price-tag mb-2">${{ number_format($item->subtotal, 2) }}</div>
+                            <form action="{{ route('cart.remove', $item->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa fa-trash me-1"></i>Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
-                <div class="card-body">
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+            </div>
 
-                    @if($cartItems->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Subtotal</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($cartItems as $item)
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    @if($item->food->image)
-                                                        <img src="{{ asset($item->food->image) }}" alt="{{ $item->food->name }}" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                                                    @endif
-                                                    <div>
-                                                        <h6 class="mb-0">{{ $item->food->name }}</h6>
-                                                        <small class="text-muted">{{ $item->food->category }}</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>${{ number_format($item->price, 2) }}</td>
-                                            <td>{{ $item->quantity }}</td>
-                                            <td><strong>${{ number_format($item->subtotal, 2) }}</strong></td>
-                                            <td>
-                                                <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this item?')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr class="table-primary">
-                                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                        <td colspan="2"><strong>${{ number_format($total, 2) }}</strong></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('menu') }}" class="btn btn-outline-secondary">
-                                <i class="fa fa-arrow-left me-2"></i>Continue Shopping
-                            </a>
-                            <a href="{{ route('checkout') }}" class="btn btn-primary">
-                                <i class="fa fa-credit-card me-2"></i>Proceed to Checkout
-                            </a>
-                        </div>
-                    @else
-                        <div class="text-center py-5">
-                            <i class="fa fa-cart-shopping fa-4x text-muted mb-3"></i>
-                            <h5 class="text-muted">Your cart is empty</h5>
-                            <p class="text-muted">Add some delicious items to get started!</p>
-                            <a href="{{ route('menu') }}" class="btn btn-primary mt-2">
-                                <i class="fa fa-utensils me-2"></i>Browse Menu
-                            </a>
-                        </div>
-                    @endif
+            <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="order-summary p-4">
+                    <h5 class="mb-4">Order Summary</h5>
+                    @foreach($cartItems as $item)
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">{{ $item->food->name }} x{{ $item->quantity }}</span>
+                        <span>${{ number_format($item->subtotal, 2) }}</span>
+                    </div>
+                    @endforeach
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="mb-0">Total</h5>
+                        <h5 class="text-primary mb-0">${{ number_format($total, 2) }}</h5>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('checkout') }}" class="btn btn-primary btn-lg">
+                            <i class="fa fa-credit-card me-2"></i>Proceed to Checkout
+                        </a>
+                        <a href="{{ route('menu') }}" class="btn btn-outline-primary">
+                            <i class="fa fa-utensils me-2"></i>Continue Shopping
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+        @else
+        <div class="empty-state wow fadeInUp" data-wow-delay="0.1s">
+            <div class="empty-state-icon">
+                <i class="fas fa-cart-shopping"></i>
+            </div>
+            <h4>Your Cart is Empty</h4>
+            <p>Looks like you haven't added any items to your cart yet.</p>
+            <a href="{{ route('menu') }}" class="btn btn-primary btn-lg">
+                <i class="fa fa-utensils me-2"></i>Browse Our Menu
+            </a>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

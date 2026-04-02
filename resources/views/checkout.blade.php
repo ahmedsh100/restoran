@@ -102,20 +102,22 @@
 
                         <div class="col-12">
                             <h6 class="mb-3">Payment Method</h6>
-                            <div class="row g-2">
+                            <div class="row g-3">
                                 <div class="col-6">
-                                    <input type="radio" class="btn-check" name="payment_method" id="payCash" value="cash" checked>
-                                    <label class="btn btn-outline-primary w-100 py-3" for="payCash">
-                                        <i class="fa fa-money-bill-wave fa-2x mb-2 d-block"></i>
-                                        Cash on Delivery
-                                    </label>
+                                    <div class="payment-option selected">
+                                        <input type="radio" name="payment_method" id="payCash" value="cash" checked>
+                                        <i class="fa fa-money-bill-wave fa-2x mb-2 d-block text-primary"></i>
+                                        <strong>Cash</strong>
+                                        <small class="d-block text-muted">On Delivery</small>
+                                    </div>
                                 </div>
                                 <div class="col-6">
-                                    <input type="radio" class="btn-check" name="payment_method" id="payStripe" value="stripe">
-                                    <label class="btn btn-outline-primary w-100 py-3" for="payStripe">
-                                        <i class="fa fa-credit-card fa-2x mb-2 d-block"></i>
-                                        Pay with Stripe
-                                    </label>
+                                    <div class="payment-option">
+                                        <input type="radio" name="payment_method" id="payStripe" value="stripe">
+                                        <i class="fa fa-credit-card fa-2x mb-2 d-block text-primary"></i>
+                                        <strong>Stripe</strong>
+                                        <small class="d-block text-muted">Card Payment</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Our Menu')
+
 @section('content')
 <div class="container-xxl py-5">
     <div class="container">
@@ -42,32 +44,35 @@
                     <div class="row g-4">
                         @forelse ($breakfast as $food)
                         <div class="col-lg-6">
-                            <div class="d-flex align-items-center">
-                                <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('assets/img/'.$food->image) }}" alt="" style="width: 80px;">
+                            <div class="d-flex align-items-center food-item-hover">
+                                <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('storage/'.$food->image) }}" alt="{{ $food->name }}" style="width: 80px; height: 80px; object-fit: cover;" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
                                 <div class="w-100 d-flex flex-column text-start ps-4">
                                     <h5 class="d-flex justify-content-between border-bottom pb-2">
                                         <span>{{ $food->name }}</span>
                                         <span class="text-primary">${{ number_format($food->price, 2) }}</span>
                                     </h5>
-                                    <small class="fst-italic">{{ $food->description }}</small>
+                                    <small class="fst-italic">{{ Str::limit($food->description, 80) }}</small>
                                     <div class="d-flex gap-2 mt-2">
-                                        <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                        <a href="{{ route('food.show', $food->id) }}" class="btn btn-sm btn-outline-primary">Details</a>
                                         @auth
                                         <form action="{{ route('cart.add', $food->id) }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="quantity" value="1">
-                                            <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
                                         </form>
                                         @else
-                                        <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                        <a href="{{ route('login') }}" class="btn btn-sm btn-primary">Login to Order</a>
                                         @endauth
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @empty
-                        <div class="col-12 text-center text-muted">
-                            <p>No items available in this category.</p>
+                        <div class="col-12">
+                            <div class="empty-state py-5">
+                                <i class="fa fa-coffee fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No breakfast items available yet.</p>
+                            </div>
                         </div>
                         @endforelse
                     </div>
@@ -76,32 +81,35 @@
                     <div class="row g-4">
                         @forelse ($lunch as $food)
                         <div class="col-lg-6">
-                            <div class="d-flex align-items-center">
-                                <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('assets/img/'.$food->image) }}" alt="" style="width: 80px;">
+                            <div class="d-flex align-items-center food-item-hover">
+                                <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('storage/'.$food->image) }}" alt="{{ $food->name }}" style="width: 80px; height: 80px; object-fit: cover;" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
                                 <div class="w-100 d-flex flex-column text-start ps-4">
                                     <h5 class="d-flex justify-content-between border-bottom pb-2">
                                         <span>{{ $food->name }}</span>
                                         <span class="text-primary">${{ number_format($food->price, 2) }}</span>
                                     </h5>
-                                    <small class="fst-italic">{{ $food->description }}</small>
+                                    <small class="fst-italic">{{ Str::limit($food->description, 80) }}</small>
                                     <div class="d-flex gap-2 mt-2">
-                                        <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                        <a href="{{ route('food.show', $food->id) }}" class="btn btn-sm btn-outline-primary">Details</a>
                                         @auth
                                         <form action="{{ route('cart.add', $food->id) }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="quantity" value="1">
-                                            <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
                                         </form>
                                         @else
-                                        <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                        <a href="{{ route('login') }}" class="btn btn-sm btn-primary">Login to Order</a>
                                         @endauth
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @empty
-                        <div class="col-12 text-center text-muted">
-                            <p>No items available in this category.</p>
+                        <div class="col-12">
+                            <div class="empty-state py-5">
+                                <i class="fa fa-hamburger fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No lunch items available yet.</p>
+                            </div>
                         </div>
                         @endforelse
                     </div>
@@ -110,32 +118,35 @@
                     <div class="row g-4">
                         @forelse ($dinner as $food)
                         <div class="col-lg-6">
-                            <div class="d-flex align-items-center">
-                                <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('assets/img/'.$food->image) }}" alt="" style="width: 80px;">
+                            <div class="d-flex align-items-center food-item-hover">
+                                <img class="flex-shrink-0 img-fluid rounded" src="{{ asset('storage/'.$food->image) }}" alt="{{ $food->name }}" style="width: 80px; height: 80px; object-fit: cover;" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
                                 <div class="w-100 d-flex flex-column text-start ps-4">
                                     <h5 class="d-flex justify-content-between border-bottom pb-2">
                                         <span>{{ $food->name }}</span>
                                         <span class="text-primary">${{ number_format($food->price, 2) }}</span>
                                     </h5>
-                                    <small class="fst-italic">{{ $food->description }}</small>
+                                    <small class="fst-italic">{{ Str::limit($food->description, 80) }}</small>
                                     <div class="d-flex gap-2 mt-2">
-                                        <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                        <a href="{{ route('food.show', $food->id) }}" class="btn btn-sm btn-outline-primary">Details</a>
                                         @auth
                                         <form action="{{ route('cart.add', $food->id) }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="quantity" value="1">
-                                            <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
                                         </form>
                                         @else
-                                        <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                        <a href="{{ route('login') }}" class="btn btn-sm btn-primary">Login to Order</a>
                                         @endauth
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @empty
-                        <div class="col-12 text-center text-muted">
-                            <p>No items available in this category.</p>
+                        <div class="col-12">
+                            <div class="empty-state py-5">
+                                <i class="fa fa-utensils fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No dinner items available yet.</p>
+                            </div>
                         </div>
                         @endforelse
                     </div>

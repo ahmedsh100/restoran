@@ -12,7 +12,7 @@
 
         <div class="row g-5 mb-5">
             <div class="col-lg-5">
-                <img src="{{ asset('storage/'.$food->image) }}" class="img-fluid rounded w-100" style="object-fit: cover; max-height: 400px;" alt="{{ $food->name }}">
+                <img src="{{ asset('storage/'.$food->image) }}" class="img-fluid rounded w-100" style="object-fit: cover; max-height: 400px;" alt="{{ $food->name }}" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
             </div>
             <div class="col-lg-7">
                 <span class="badge bg-primary mb-2 fs-6">{{ $food->category }}</span>
