@@ -19,10 +19,12 @@ class Food extends Model
         'category',
         'description',
         'image',
+        'is_available',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'is_available' => 'boolean',
     ];
 
     public $timestamps = true;

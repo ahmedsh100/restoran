@@ -2,36 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFoodRequest;
+use App\Http\Requests\UpdateFoodRequest;
 use App\Models\Coupon;
-use App\Models\Food\Food;
-use App\Models\Order;
-use App\Models\Review;
 use App\Models\User;
+use App\Repositories\Contracts\FoodRepositoryInterface;
+use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Services\CouponService;
+use App\Services\OrderService;
+use App\Services\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        protected FoodRepositoryInterface $foodRepository,
+        protected OrderRepositoryInterface $orderRepository,
+        protected OrderService $orderService,
+        protected CouponService $couponService,
+        protected ReviewService $reviewService
+    ) {
         $this->middleware(['auth', 'admin']);
     }
 
     public function index()
     {
-        $totalOrders = Order::count();
-        $totalUsers = User::count();
-        $totalRevenue = Order::where('status', '!=', 'cancelled')->sum('total_price');
-        $recentOrders = Order::with('user')->latest()->take(10)->get();
-        $pendingReviews = Review::where('is_approved', false)->count();
-        $activeCoupons = Coupon::where('is_active', true)->count();
-
-        return view('admin.dashboard', compact('totalOrders', 'totalUsers', 'totalRevenue', 'recentOrders', 'pendingReviews', 'activeCoupons'));
+        return view('admin.dashboard', [
+            'totalOrders' => $this->orderRepository->count(),
+            'totalUsers' => User::count(),
+            'totalRevenue' => $this->orderRepository->getTotalRevenue('cancelled'),
+            'recentOrders' => $this->orderRepository->getRecent(10),
+            'pendingReviews' => $this->reviewService->getPendingCount(),
+            'activeCoupons' => Coupon::where('is_active', true)->count(),
+        ]);
     }
 
     public function foods()
     {
-        $foods = Food::latest()->get();
+        $foods = $this->foodRepository->all();
 
         return view('admin.foods.index', compact('foods'));
     }
@@ -41,19 +50,11 @@ class AdminController extends Controller
         return view('admin.foods.create');
     }
 
-    public function storeFood(Request $request)
+    public function storeFood(StoreFoodRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
         $imagePath = $request->file('image')->store('foods', 'public');
 
-        Food::create([
+        $this->foodRepository->create([
             'name' => $request->name,
             'price' => $request->price,
             'category' => $request->category,
@@ -66,29 +67,24 @@ class AdminController extends Controller
 
     public function editFood($id)
     {
-        $food = Food::findOrFail($id);
+        $food = $this->foodRepository->findById($id);
+
+        if (! $food) {
+            return redirect()->route('admin.foods')->with('error', 'Food item not found.');
+        }
 
         return view('admin.foods.edit', compact('food'));
     }
 
-    public function updateFood(Request $request, $id)
+    public function updateFood(UpdateFoodRequest $request, $id)
     {
-        $food = Food::findOrFail($id);
+        $food = $this->foodRepository->findById($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        if (! $food) {
+            return redirect()->route('admin.foods')->with('error', 'Food item not found.');
+        }
 
-        $data = [
-            'name' => $request->name,
-            'price' => $request->price,
-            'category' => $request->category,
-            'description' => $request->description,
-        ];
+        $data = $request->only(['name', 'price', 'category', 'description']);
 
         if ($request->hasFile('image')) {
             if ($food->image) {
@@ -97,27 +93,31 @@ class AdminController extends Controller
             $data['image'] = $request->file('image')->store('foods', 'public');
         }
 
-        $food->update($data);
+        $this->foodRepository->update($id, $data);
 
         return redirect()->route('admin.foods')->with('success', 'Food item updated successfully.');
     }
 
     public function deleteFood($id)
     {
-        $food = Food::findOrFail($id);
+        $food = $this->foodRepository->findById($id);
+
+        if (! $food) {
+            return redirect()->route('admin.foods')->with('error', 'Food item not found.');
+        }
 
         if ($food->image) {
             Storage::disk('public')->delete($food->image);
         }
 
-        $food->delete();
+        $this->foodRepository->delete($id);
 
         return redirect()->route('admin.foods')->with('success', 'Food item deleted successfully.');
     }
 
     public function orders()
     {
-        $orders = Order::with('user')->latest()->get();
+        $orders = $this->orderRepository->all();
 
         return view('admin.orders.index', compact('orders'));
     }
@@ -125,36 +125,44 @@ class AdminController extends Controller
     public function updateOrderStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,cooking,delivered,cancelled',
+            'status' => ['required', 'in:pending,cooking,delivered,cancelled'],
         ]);
 
-        $order = Order::findOrFail($id);
-        $order->update(['status' => $request->status]);
+        $order = $this->orderRepository->findById($id);
 
-        return back()->with('success', 'Order status updated successfully.');
+        if (! $order) {
+            return redirect()->back()->with('error', 'Order not found.');
+        }
+
+        if ($order->payment_method === 'stripe' && $order->payment_status !== 'paid' && $request->status !== 'cancelled') {
+            return redirect()->back()->with('error', 'Cannot update status of unpaid Stripe order.');
+        }
+
+        $this->orderService->updateStatus($id, $request->status);
+
+        return redirect()->back()->with('success', 'Order status updated successfully.');
     }
 
     public function reviews()
     {
-        $reviews = Review::with('user', 'food')->latest()->get();
+        $reviews = $this->reviewService->getAllWithRelations();
 
         return view('admin.reviews.index', compact('reviews'));
     }
 
     public function toggleReview($id)
     {
-        $review = Review::findOrFail($id);
-        $review->update(['is_approved' => ! $review->is_approved]);
+        $this->reviewService->toggleApproval($id);
 
-        return back()->with('success', 'Review status updated.');
+        return redirect()->back()->with('success', 'Review status updated.');
     }
 
     public function deleteReview($id)
     {
-        $review = Review::findOrFail($id);
+        $review = \App\Models\Review::findOrFail($id);
         $review->delete();
 
-        return back()->with('success', 'Review deleted.');
+        return redirect()->back()->with('success', 'Review deleted.');
     }
 
     public function coupons()
@@ -172,11 +180,11 @@ class AdminController extends Controller
     public function storeCoupon(Request $request)
     {
         $request->validate([
-            'code' => 'required|string|unique:coupons,code',
-            'type' => 'required|in:fixed,percentage',
-            'value' => 'required|numeric|min:0',
-            'expiry_date' => 'required|date|after:today',
-            'usage_limit' => 'nullable|integer|min:0',
+            'code' => ['required', 'string', 'unique:coupons,code'],
+            'type' => ['required', 'in:fixed,percentage'],
+            'value' => ['required', 'numeric', 'min:0'],
+            'expiry_date' => ['required', 'date', 'after:today'],
+            'usage_limit' => ['nullable', 'integer', 'min:0'],
         ]);
 
         Coupon::create([
@@ -196,7 +204,7 @@ class AdminController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->update(['is_active' => ! $coupon->is_active]);
 
-        return back()->with('success', 'Coupon status updated.');
+        return redirect()->back()->with('success', 'Coupon status updated.');
     }
 
     public function deleteCoupon($id)
@@ -204,6 +212,6 @@ class AdminController extends Controller
         $coupon = Coupon::findOrFail($id);
         $coupon->delete();
 
-        return back()->with('success', 'Coupon deleted.');
+        return redirect()->back()->with('success', 'Coupon deleted.');
     }
 }

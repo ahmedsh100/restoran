@@ -3,31 +3,28 @@
 namespace App\Providers;
 
 use App\Models\CartItem;
+use App\Repositories\Contracts\FoodRepositoryInterface;
+use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Repositories\FoodRepository;
+use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        $this->app->bind(FoodRepositoryInterface::class, FoodRepository::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            if (auth()->check()) {
-                $cartCount = CartItem::where('user_id', auth()->id())->sum('quantity');
-                $view->with('cartCount', $cartCount);
-            } else {
-                $view->with('cartCount', 0);
-            }
+            $view->with('cartCount', auth()->check()
+                ? CartItem::where('user_id', auth()->id())->sum('quantity')
+                : 0
+            );
         });
     }
 }

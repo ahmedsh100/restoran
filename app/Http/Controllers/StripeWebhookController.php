@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Stripe\Checkout\Session;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
 
@@ -15,6 +14,10 @@ class StripeWebhookController extends Controller
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
         $endpointSecret = config('services.stripe.webhook_secret');
+
+        if (! $endpointSecret) {
+            return response()->json(['error' => 'Stripe webhook secret not configured'], 500);
+        }
 
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
@@ -40,17 +43,13 @@ class StripeWebhookController extends Controller
 
         if ($event->type === 'payment_intent.payment_failed') {
             $paymentIntent = $event->data->object;
-            $sessionId = $paymentIntent->metadata->checkout_session_id ?? null;
+            $orderId = $paymentIntent->metadata->order_id ?? null;
 
-            if ($sessionId) {
-                $session = Session::retrieve($sessionId);
-                $orderId = $session->metadata->order_id ?? null;
+            if ($orderId) {
+                $order = Order::find($orderId);
 
-                if ($orderId) {
-                    $order = Order::find($orderId);
-                    if ($order) {
-                        $order->update(['payment_status' => 'failed']);
-                    }
+                if ($order && $order->payment_status === 'pending') {
+                    $order->update(['payment_status' => 'failed']);
                 }
             }
         }
