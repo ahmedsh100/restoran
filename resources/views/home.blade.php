@@ -185,7 +185,18 @@
                                                 <span class="text-primary">{{ $food->price }}</span>
                                             </h5>
                                             <small class="fst-italic">{{ $food->description }}</small>
-                                            <a type="button" href="{{ url('/cart') }}" class="btn btn-primary py-2 top-0 end-0 mt-2 me-2">view</a>
+                                            <div class="d-flex gap-2 mt-2">
+                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                                @auth
+                                                <form action="{{ route('cart.add', $food->id) }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                                </form>
+                                                @else
+                                                <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                                @endauth
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -200,10 +211,22 @@
                                         <img class="flex-shrink-0 img-fluid rounded" src="{{asset('assets/img/'.$food->image.'')}}" alt="" style="width: 80px;">
                                         <div class="w-100 d-flex flex-column text-start ps-4">
                                             <h5 class="d-flex justify-content-between border-bottom pb-2">
-                                                <span>{{$food->image}}</span>
+                                                <span>{{$food->name}}</span>
                                                 <span class="text-primary">{{$food->price}}</span>
                                             </h5>
                                             <small class="fst-italic">{{$food->description}}</small>
+                                            <div class="d-flex gap-2 mt-2">
+                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                                @auth
+                                                <form action="{{ route('cart.add', $food->id) }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                                </form>
+                                                @else
+                                                <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                                @endauth
+                                            </div>
                                         </div>
                                     </div>
                                     @endforeach
@@ -218,6 +241,18 @@
                                                 <span class="text-primary">{{$food->price}}</span>
                                             </h5>
                                             <small class="fst-italic">{{$food->description}}</small>
+                                            <div class="d-flex gap-2 mt-2">
+                                                <a href="{{ route('food.show', $food->id) }}" class="btn btn-outline-primary py-2 px-3">Details</a>
+                                                @auth
+                                                <form action="{{ route('cart.add', $food->id) }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="btn btn-primary py-2 px-3">Add to Cart</button>
+                                                </form>
+                                                @else
+                                                <a href="{{ route('login') }}" class="btn btn-primary py-2 px-3">Login to Order</a>
+                                                @endauth
+                                            </div>
                                         </div>
                                     </div>
                                     @endforeach

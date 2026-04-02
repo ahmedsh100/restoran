@@ -57,7 +57,14 @@
                         <a href="{{ url('/about') }}" class="nav-item nav-link">About</a>
                         <a href="{{ url('/service') }}" class="nav-item nav-link">Service</a>
                         <a href="{{ url('/menu') }}" class="nav-item nav-link">Menu</a>
-                        <a href="{{ url('/cart') }}" class="nav-item nav-link"><i class="fa-sharp fa-solid fa-cart-shopping"></i>Cart</a>
+                        <a href="{{ route('cart.index') }}" class="nav-item nav-link position-relative">
+                            <i class="fa-sharp fa-solid fa-cart-shopping"></i>Cart
+                            @if($cartCount > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                    {{ $cartCount }}
+                                </span>
+                            @endif
+                        </a>
                         <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact</a>
                     </div>
 
