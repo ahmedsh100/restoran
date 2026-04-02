@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Foods\FoodController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -21,5 +22,10 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::get('/food/add-to-cart', [FoodController::class, 'addToCart'])->name('food.addTo-cart');
-Route::post('/food/detail/{food_id}', [FoodController::class, 'detail'])->name('food.detail');
+Route::get('/food/{id}', [FoodController::class, 'show'])->name('food.show');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::delete('/cart/remove/{cartItemId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+});
