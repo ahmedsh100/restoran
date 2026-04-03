@@ -19,9 +19,9 @@ class PageController extends Controller
 
     public function menu()
     {
-        $breakfast = Food::where('category', 'Main Course')->get();
-        $lunch = Food::where('category', 'Appetizer')->get();
-        $dinner = Food::where('category', 'Dessert')->get();
+        $breakfast = Food::where('category', 'Main Course')->where('is_available', true)->get();
+        $lunch = Food::where('category', 'Appetizer')->where('is_available', true)->get();
+        $dinner = Food::where('category', 'Dessert')->where('is_available', true)->get();
 
         return view('menu', compact('breakfast', 'lunch', 'dinner'));
     }

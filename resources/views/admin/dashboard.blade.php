@@ -63,7 +63,7 @@
         <div class="card table-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Recent Orders</h6>
-                <a href="{{ route('admin.orders') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -106,13 +106,13 @@
         <div class="card table-card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">Pending Reviews</h6>
-                <a href="{{ route('admin.reviews') }}" class="btn btn-sm btn-outline-primary">Manage</a>
+                <a href="{{ route('admin.reviews.index') }}" class="btn btn-sm btn-outline-primary">Manage</a>
             </div>
             <div class="card-body text-center py-4">
                 <div class="display-4 text-warning mb-2">{{ $pendingReviews }}</div>
                 <p class="text-muted mb-0">Reviews awaiting moderation</p>
                 @if($pendingReviews > 0)
-                <a href="{{ route('admin.reviews') }}" class="btn btn-sm btn-outline-warning mt-2">Review Now</a>
+                <a href="{{ route('admin.reviews.index') }}" class="btn btn-sm btn-outline-warning mt-2">Review Now</a>
                 @endif
             </div>
         </div>
@@ -128,7 +128,7 @@
                 <a href="{{ route('admin.coupons.create') }}" class="btn btn-outline-success w-100 mb-2">
                     <i class="fa fa-tags me-2"></i>Create Coupon
                 </a>
-                <a href="{{ route('admin.orders') }}" class="btn btn-outline-info w-100">
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-info w-100">
                     <i class="fa fa-clipboard-list me-2"></i>View All Orders
                 </a>
             </div>

@@ -60,9 +60,10 @@ class AdminController extends Controller
             'category' => $request->category,
             'description' => $request->description,
             'image' => $imagePath,
+            'is_available' => true,
         ]);
 
-        return redirect()->route('admin.foods')->with('success', 'Food item created successfully.');
+        return redirect()->route('admin.foods.index')->with('success', 'Food item created successfully.');
     }
 
     public function editFood($id)
@@ -70,7 +71,7 @@ class AdminController extends Controller
         $food = $this->foodRepository->findById($id);
 
         if (! $food) {
-            return redirect()->route('admin.foods')->with('error', 'Food item not found.');
+            return redirect()->route('admin.foods.index')->with('error', 'Food item not found.');
         }
 
         return view('admin.foods.edit', compact('food'));
@@ -81,10 +82,11 @@ class AdminController extends Controller
         $food = $this->foodRepository->findById($id);
 
         if (! $food) {
-            return redirect()->route('admin.foods')->with('error', 'Food item not found.');
+            return redirect()->route('admin.foods.index')->with('error', 'Food item not found.');
         }
 
         $data = $request->only(['name', 'price', 'category', 'description']);
+        $data['is_available'] = $request->boolean('is_available');
 
         if ($request->hasFile('image')) {
             if ($food->image) {
@@ -95,7 +97,7 @@ class AdminController extends Controller
 
         $this->foodRepository->update($id, $data);
 
-        return redirect()->route('admin.foods')->with('success', 'Food item updated successfully.');
+        return redirect()->route('admin.foods.index')->with('success', 'Food item updated successfully.');
     }
 
     public function deleteFood($id)
@@ -103,7 +105,7 @@ class AdminController extends Controller
         $food = $this->foodRepository->findById($id);
 
         if (! $food) {
-            return redirect()->route('admin.foods')->with('error', 'Food item not found.');
+            return redirect()->route('admin.foods.index')->with('error', 'Food item not found.');
         }
 
         if ($food->image) {
@@ -112,7 +114,20 @@ class AdminController extends Controller
 
         $this->foodRepository->delete($id);
 
-        return redirect()->route('admin.foods')->with('success', 'Food item deleted successfully.');
+        return redirect()->route('admin.foods.index')->with('success', 'Food item deleted successfully.');
+    }
+
+    public function toggleFoodAvailability($id)
+    {
+        $food = $this->foodRepository->findById($id);
+
+        if (! $food) {
+            return redirect()->route('admin.foods.index')->with('error', 'Food item not found.');
+        }
+
+        $this->foodRepository->update($id, ['is_available' => ! $food->is_available]);
+
+        return redirect()->route('admin.foods.index')->with('success', 'Food availability updated.');
     }
 
     public function orders()
@@ -196,7 +211,7 @@ class AdminController extends Controller
             'is_active' => true,
         ]);
 
-        return redirect()->route('admin.coupons')->with('success', 'Coupon created successfully.');
+        return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully.');
     }
 
     public function toggleCoupon($id)

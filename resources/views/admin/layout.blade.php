@@ -144,16 +144,16 @@
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="fa fa-tachometer-alt"></i> Dashboard
             </a>
-            <a href="{{ route('admin.foods') }}" class="{{ request()->routeIs('admin.foods*') ? 'active' : '' }}">
+            <a href="{{ route('admin.foods.index') }}" class="{{ request()->routeIs('admin.foods*') ? 'active' : '' }}">
                 <i class="fa fa-hamburger"></i> Food Items
             </a>
-            <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'active' : '' }}">
+            <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders*') ? 'active' : '' }}">
                 <i class="fa fa-clipboard-list"></i> Orders
             </a>
-            <a href="{{ route('admin.reviews') }}" class="{{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
+            <a href="{{ route('admin.reviews.index') }}" class="{{ request()->routeIs('admin.reviews*') ? 'active' : '' }}">
                 <i class="fa fa-star"></i> Reviews
             </a>
-            <a href="{{ route('admin.coupons') }}" class="{{ request()->routeIs('admin.coupons*') ? 'active' : '' }}">
+            <a href="{{ route('admin.coupons.index') }}" class="{{ request()->routeIs('admin.coupons*') ? 'active' : '' }}">
                 <i class="fa fa-tags"></i> Coupons
             </a>
             <hr class="mx-3 my-2" style="border-color: rgba(255,255,255,0.1);">

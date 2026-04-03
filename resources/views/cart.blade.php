@@ -10,15 +10,39 @@
             <h1 class="mb-5">Your Shopping Cart</h1>
         </div>
 
+        @php
+        $hasUnavailableItems = $cartItems->contains(function($item) {
+            return !$item->food->is_available;
+        });
+        @endphp
+
+        @if($hasUnavailableItems)
+        <div class="alert alert-warning mb-4">
+            <i class="fa fa-exclamation-triangle me-2"></i>Some items in your cart are no longer available. Please remove them before checkout.
+        </div>
+        @endif
+
+        @php
+        $hasUnavailableItems = $cartItems->contains(function($item) {
+            return !$item->food->is_available;
+        });
+        @endphp
+
+        @if($hasUnavailableItems)
+        <div class="alert alert-warning mb-4">
+            <i class="fa fa-exclamation-triangle me-2"></i>Some items in your cart are no longer available. Please remove them before checkout.
+        </div>
+        @endif
+
         @if($cartItems->count() > 0)
         <div class="row g-5">
             <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="order-summary p-4">
                     @foreach($cartItems as $item)
-                    <div class="order-item">
+                    <div class="order-item {{ !$item->food->is_available ? 'opacity-50' : '' }}">
                         <img src="{{ asset('storage/'.$item->food->image) }}" alt="{{ $item->food->name }}" data-fallback="{{ asset('assets/img/menu-1.jpg') }}">
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-1">{{ $item->food->name }}</h6>
+                            <h6 class="mb-1">{{ $item->food->name }} @if(!$item->food->is_available)<span class="badge bg-danger">Unavailable</span>@endif</h6>
                             <small class="text-muted">{{ $item->food->category }}</small>
                             <div class="d-flex align-items-center mt-2">
                                 <span class="text-muted me-3">Qty: {{ $item->quantity }}</span>

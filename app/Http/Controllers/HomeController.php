@@ -13,9 +13,9 @@ class HomeController extends Controller
 
     public function index()
     {
-        $breakfast = Food::where('category', 'Main Course')->take(4)->get();
-        $lunch = Food::where('category', 'Appetizer')->take(4)->get();
-        $dinner = Food::where('category', 'Dessert')->take(4)->get();
+        $breakfast = Food::where('category', 'Main Course')->where('is_available', true)->take(4)->get();
+        $lunch = Food::where('category', 'Appetizer')->where('is_available', true)->take(4)->get();
+        $dinner = Food::where('category', 'Dessert')->where('is_available', true)->take(4)->get();
 
         return view('home', compact('breakfast', 'lunch', 'dinner'));
     }
