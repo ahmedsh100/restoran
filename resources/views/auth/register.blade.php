@@ -1,78 +1,69 @@
 @extends('layouts.app')
 
+@section('title', 'Register')
+
 @section('content')
-
-            <div class="container-xxl py-5 bg-dark hero-header mb-5" style="margin-top: -25px">
-                <div class="container text-center my-5 pt-5 pb-4">
-                    <h1 class="display-3 text-white mb-3 animated slideInDown">Registeration</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center text-uppercase">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Register</a></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-10">
-                        <div class="bg-dark p-5 wow fadeInUp" data-wow-delay="0.2s">
-                            <h5 class="section-title ff-secondary text-start text-primary fw-normal">Register</h5>
-                            <h1 class="text-white mb-4">Register for a new user</h1>
-                            <form method="POST" action="{{ route('register') }}">
-                                @csrf
-                                <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-                                        <label for="name">Name</label>
-                                        @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <i class="fa fa-user-plus fa-3x mb-3"></i>
+                        <h2 class="mb-1">Create Account</h2>
+                        <p class="mb-0 opacity-75">Join us for a delicious experience</p>
+                    </div>
+                    <div class="auth-body">
+                        <form method="POST" action="{{ route('register') }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-semibold">Full Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Enter your full name">
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-                                        <label for="email">Email address</label>
-                                        @error('email')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+                                @error('name')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Enter your email">
                                 </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-                                        <label for="password">Password</label>
-                                        @error('password')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+                                @error('email')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-semibold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Create a password">
                                 </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                                        <label for="password-confirm">Confirm Password</label>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-md-12">
-                                    <button class="btn btn-primary w-100 py-3" name="submit" type="submit">Register</button>
+                                @error('password')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-4">
+                                <label for="password-confirm" class="form-label fw-semibold">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm your password">
                                 </div>
                             </div>
+                            <button type="submit" class="btn btn-primary w-100 py-3 btn-lg">
+                                <i class="fa fa-user-plus me-2"></i>Create Account
+                            </button>
                         </form>
+                        <div class="text-center mt-4">
+                            <p class="text-muted mb-0">Already have an account? <a href="{{ route('login') }}" class="text-primary fw-semibold">Sign in here</a></p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 @endsection
