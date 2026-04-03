@@ -56,7 +56,7 @@
                     <button type="submit" class="btn btn-primary-custom">
                         <i class="fa fa-save me-1"></i> Save Food Item
                     </button>
-                    <a href="{{ route('admin.foods') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                    <a href="{{ route('admin.foods.index') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
                 </div>
             </div>
         </form>

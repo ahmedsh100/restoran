@@ -55,7 +55,7 @@
                     <button type="submit" class="btn btn-primary-custom">
                         <i class="fa fa-save me-1"></i> Create Coupon
                     </button>
-                    <a href="{{ route('admin.coupons') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                    <a href="{{ route('admin.coupons.index') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
                 </div>
             </div>
         </form>

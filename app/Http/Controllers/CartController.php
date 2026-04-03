@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCartRequest;
 use App\Models\CartItem;
 use App\Models\Food\Food;
 use Illuminate\Http\Request;
@@ -22,18 +23,9 @@ class CartController extends Controller
         return view('cart', compact('cartItems', 'total'));
     }
 
-    public function addToCart(Request $request, $id)
+    public function addToCart(StoreCartRequest $request, $id)
     {
-        $request->validate([
-            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
-        ]);
-
         $food = Food::findOrFail($id);
-
-        if (isset($food->is_available) && ! $food->is_available) {
-            return redirect()->back()->with('error', 'This item is currently unavailable.');
-        }
-
         $user = $request->user();
 
         DB::transaction(function () use ($food, $user, $request) {
@@ -62,6 +54,8 @@ class CartController extends Controller
         $cartItem = CartItem::where('user_id', $request->user()->id)
             ->where('id', $cartItemId)
             ->firstOrFail();
+
+        $this->authorize('delete', $cartItem);
 
         $cartItem->delete();
 

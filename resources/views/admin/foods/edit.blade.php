@@ -61,10 +61,26 @@
                     @enderror
                 </div>
                 <div class="col-12">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_available" name="is_available" value="1" {{ old('is_available', $food->is_available) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="is_available">
+                            Available for ordering
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_available" name="is_available" value="1" {{ old('is_available', $food->is_available) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="is_available">
+                            Available for ordering
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
                     <button type="submit" class="btn btn-primary-custom">
                         <i class="fa fa-save me-1"></i> Update Food Item
                     </button>
-                    <a href="{{ route('admin.foods') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+                    <a href="{{ route('admin.foods.index') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
                 </div>
             </div>
         </form>

@@ -27,53 +27,96 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('dashboard');
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/food/{id}', [FoodController::class, 'show'])->name('food.show');
 
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/service', [PageController::class, 'service'])->name('service');
-Route::get('/menu', [PageController::class, 'menu'])->name('menu');
-Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-Route::post('/contact', [PageController::class, 'contactSubmit'])->name('contact.submit');
-
-Route::middleware('auth')->group(function () {
-    Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::delete('/cart/remove/{cartItemId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-
-    Route::post('/review/{foodId}', [ReviewController::class, 'store'])->name('review.store');
-
-    Route::post('/apply-coupon', [OrderController::class, 'applyCoupon'])->name('coupon.apply');
-    Route::post('/remove-coupon', [OrderController::class, 'removeCoupon'])->name('coupon.remove');
-    Route::get('/checkout', [OrderController::class, 'showCheckout'])->name('checkout');
-    Route::post('/place-order', [OrderController::class, 'placeOrder'])->name('place.order');
-    Route::get('/payment/success', [OrderController::class, 'paymentSuccess'])->name('payment.success');
-    Route::get('/payment/cancel', [OrderController::class, 'paymentCancel'])->name('payment.cancel');
-    Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('my.orders');
-    Route::get('/order-success/{orderId}', [OrderController::class, 'orderSuccess'])->name('order.success');
+Route::controller(PageController::class)->group(function () {
+    Route::get('/about', 'about')->name('about');
+    Route::get('/service', 'service')->name('service');
+    Route::get('/menu', 'menu')->name('menu');
+    Route::get('/contact', 'contact')->name('contact');
+    Route::post('/contact', 'contactSubmit')->name('contact.submit');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Authenticated User Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+
+    // Cart Routes
+    Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/add/{id}', 'addToCart')->name('add');
+        Route::delete('/remove/{cartItemId}', 'removeFromCart')->name('remove');
+    });
+
+    // Review Routes
+    Route::post('/review/{foodId}', [ReviewController::class, 'store'])->name('review.store');
+
+    // Checkout & Order Routes
+    Route::controller(OrderController::class)->group(function () {
+        Route::post('/apply-coupon', 'applyCoupon')->name('coupon.apply');
+        Route::post('/remove-coupon', 'removeCoupon')->name('coupon.remove');
+        Route::get('/checkout', 'showCheckout')->name('checkout');
+        Route::post('/place-order', 'placeOrder')->name('place.order');
+        Route::get('/payment/success', 'paymentSuccess')->name('payment.success');
+        Route::get('/payment/cancel', 'paymentCancel')->name('payment.cancel');
+        Route::get('/my-orders', 'myOrders')->name('my.orders');
+        Route::get('/order-success/{orderId}', 'orderSuccess')->name('order.success');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Stripe Webhook (No Auth Required)
+|--------------------------------------------------------------------------
+*/
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
-    Route::get('/foods', [AdminController::class, 'foods'])->name('foods');
-    Route::get('/foods/create', [AdminController::class, 'createFood'])->name('foods.create');
-    Route::post('/foods', [AdminController::class, 'storeFood'])->name('foods.store');
-    Route::get('/foods/{id}/edit', [AdminController::class, 'editFood'])->name('foods.edit');
-    Route::put('/foods/{id}', [AdminController::class, 'updateFood'])->name('foods.update');
-    Route::delete('/foods/{id}', [AdminController::class, 'deleteFood'])->name('foods.delete');
+    // Food Management
+    Route::prefix('foods')->name('foods.')->controller(AdminController::class)->group(function () {
+        Route::get('/', 'foods')->name('index');
+        Route::get('/create', 'createFood')->name('create');
+        Route::post('/', 'storeFood')->name('store');
+        Route::put('/{id}/toggle-availability', 'toggleFoodAvailability')->name('toggle-availability');
+        Route::get('/{id}/edit', 'editFood')->name('edit');
+        Route::put('/{id}', 'updateFood')->name('update');
+        Route::delete('/{id}', 'deleteFood')->name('delete');
+    });
 
-    Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
-    Route::put('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.status');
+    // Order Management
+    Route::prefix('orders')->name('orders.')->controller(AdminController::class)->group(function () {
+        Route::get('/', 'orders')->name('index');
+        Route::put('/{id}/status', 'updateOrderStatus')->name('status');
+    });
 
-    Route::get('/reviews', [AdminController::class, 'reviews'])->name('reviews');
-    Route::put('/reviews/{id}/toggle', [AdminController::class, 'toggleReview'])->name('reviews.toggle');
-    Route::delete('/reviews/{id}', [AdminController::class, 'deleteReview'])->name('reviews.delete');
+    // Review Management
+    Route::prefix('reviews')->name('reviews.')->controller(AdminController::class)->group(function () {
+        Route::get('/', 'reviews')->name('index');
+        Route::put('/{id}/toggle', 'toggleReview')->name('toggle');
+        Route::delete('/{id}', 'deleteReview')->name('delete');
+    });
 
-    Route::get('/coupons', [AdminController::class, 'coupons'])->name('coupons');
-    Route::get('/coupons/create', [AdminController::class, 'createCoupon'])->name('coupons.create');
-    Route::post('/coupons', [AdminController::class, 'storeCoupon'])->name('coupons.store');
-    Route::put('/coupons/{id}/toggle', [AdminController::class, 'toggleCoupon'])->name('coupons.toggle');
-    Route::delete('/coupons/{id}', [AdminController::class, 'deleteCoupon'])->name('coupons.delete');
+    // Coupon Management
+    Route::prefix('coupons')->name('coupons.')->controller(AdminController::class)->group(function () {
+        Route::get('/', 'coupons')->name('index');
+        Route::get('/create', 'createCoupon')->name('create');
+        Route::post('/', 'storeCoupon')->name('store');
+        Route::put('/{id}/toggle', 'toggleCoupon')->name('toggle');
+        Route::delete('/{id}', 'deleteCoupon')->name('delete');
+    });
 });

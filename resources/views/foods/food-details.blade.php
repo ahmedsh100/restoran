@@ -20,7 +20,11 @@
                 <h2 class="text-primary mb-3">${{ number_format($food->price, 2) }}</h2>
                 <p class="text-muted mb-4">{{ $food->description }}</p>
 
-                @auth
+                @if(!$food->is_available)
+                <div class="alert alert-warning mt-4">
+                    <i class="fa fa-exclamation-triangle me-2"></i>This item is currently unavailable.
+                </div>
+                @elseif(auth()->check())
                 <form action="{{ route('cart.add', $food->id) }}" method="POST" class="mt-4">
                     @csrf
                     <div class="row align-items-end g-3">
@@ -39,7 +43,7 @@
                 <a href="{{ route('login') }}" class="btn btn-primary btn-lg mt-4">
                     <i class="fa fa-sign-in-alt me-2"></i>Login to Order
                 </a>
-                @endauth
+                @endif
 
                 <a href="{{ route('menu') }}" class="btn btn-outline-secondary mt-3">
                     <i class="fa fa-arrow-left me-2"></i>Back to Menu

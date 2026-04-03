@@ -13,12 +13,12 @@ class FoodRepository implements FoodRepositoryInterface
 
     public function all(array $columns = ['*']): Collection
     {
-        return $this->model->latest()->get($columns);
+        return $this->model->where('is_available', true)->latest()->get($columns);
     }
 
     public function paginate(int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
     {
-        return $this->model->latest()->paginate($perPage, $columns);
+        return $this->model->where('is_available', true)->latest()->paginate($perPage, $columns);
     }
 
     public function findById(int $id, array $columns = ['*']): ?object
@@ -28,7 +28,7 @@ class FoodRepository implements FoodRepositoryInterface
 
     public function findByCategory(string $category, ?int $limit = null): Collection
     {
-        $query = $this->model->where('category', $category);
+        $query = $this->model->where('category', $category)->where('is_available', true);
 
         if ($limit) {
             $query->take($limit);
@@ -66,8 +66,11 @@ class FoodRepository implements FoodRepositoryInterface
 
     public function search(string $term, array $columns = ['*']): Collection
     {
-        return $this->model->where('name', 'like', "%{$term}%")
-            ->orWhere('description', 'like', "%{$term}%")
+        return $this->model->where('is_available', true)
+            ->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('description', 'like', "%{$term}%");
+            })
             ->get($columns);
     }
 }

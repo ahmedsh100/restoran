@@ -19,6 +19,7 @@
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
+                        <th>Available</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -31,6 +32,16 @@
                         <td>{{ $food->name }}</td>
                         <td><span class="badge bg-secondary">{{ $food->category }}</span></td>
                         <td>${{ number_format($food->price, 2) }}</td>
+                        <td>
+                            <form action="{{ route('admin.foods.toggle-availability', $food->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-sm {{ $food->is_available ? 'btn-success' : 'btn-danger' }}">
+                                    <i class="fa fa-{{ $food->is_available ? 'check' : 'times' }}"></i>
+                                    {{ $food->is_available ? 'Yes' : 'No' }}
+                                </button>
+                            </form>
+                        </td>
                         <td>
                             <a href="{{ route('admin.foods.edit', $food->id) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="fa fa-edit"></i>
@@ -46,7 +57,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">No food items found</td>
+                        <td colspan="6" class="text-center py-4 text-muted">No food items found</td>
                     </tr>
                     @endforelse
                 </tbody>
