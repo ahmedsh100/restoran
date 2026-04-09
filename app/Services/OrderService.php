@@ -74,7 +74,7 @@ class OrderService
 
             $lineItems = $this->buildStripeLineItems($cartItems, $discount);
 
-            $session = StripeSession::create([
+            $sessionData = [
                 'payment_method_types' => ['card'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
@@ -85,7 +85,15 @@ class OrderService
                     'user_id' => $userId,
                 ],
                 'customer_email' => $userEmail,
-            ]);
+            ];
+
+            if ($coupon && $coupon->stripe_coupon_id) {
+                $sessionData['discounts'] = [[
+                    'coupon' => $coupon->stripe_coupon_id,
+                ]];
+            }
+
+            $session = StripeSession::create($sessionData);
 
             $order->update(['stripe_session_id' => $session->id]);
 
@@ -167,24 +175,11 @@ class OrderService
                     'currency' => 'usd',
                     'product_data' => [
                         'name' => $item->food->name,
-                        'description' => $item->food->description,
+                        'description' => $item->food->description ?? 'Delicious food',
                     ],
-                    'unit_amount' => round($item->price * 100),
+                    'unit_amount' => (int) round($item->price * 100),
                 ],
-                'quantity' => $item->quantity,
-            ];
-        }
-
-        if ($discount > 0) {
-            $lineItems[] = [
-                'price_data' => [
-                    'currency' => 'usd',
-                    'product_data' => [
-                        'name' => 'Discount',
-                    ],
-                    'unit_amount' => -round($discount * 100),
-                ],
-                'quantity' => 1,
+                'quantity' => (int) $item->quantity,
             ];
         }
 

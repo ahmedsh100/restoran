@@ -42,7 +42,7 @@
                                     @foreach($order->items as $item)
                                     <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ asset('assets/img/'.$item->food->image) }}" alt="{{ $item->food->name }}" class="img-fluid rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <img src="{{ asset('storage/'.$item->food->image) }}" alt="{{ $item->food->name }}" class="img-fluid rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.src='{{ asset('assets/img/menu-1.jpg') }}'">
                                             <div>
                                                 <h6 class="mb-0">{{ $item->food->name }}</h6>
                                                 <small class="text-muted">Qty: {{ $item->quantity }} x ${{ number_format($item->price, 2) }}</small>

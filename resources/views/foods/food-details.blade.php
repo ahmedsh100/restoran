@@ -55,21 +55,45 @@
             <div class="col-lg-8">
                 <h3 class="mb-4">Customer Reviews</h3>
 
-                @if($food->rating_count > 0)
+                @php
+                $ratingBreakdown = $food->reviews->groupBy('rating')->map->count()->sortKeysDesc();
+                $totalReviews = $food->rating_count;
+                $avgRating = $food->average_rating;
+                @endphp
+                
                 <div class="d-flex align-items-center mb-4 p-3 bg-light rounded">
-                    <div class="me-3">
-                        <h2 class="mb-0">{{ $food->average_rating }}</h2>
+                    <div class="me-3 text-center">
+                        <h2 class="mb-0">{{ $avgRating > 0 ? number_format($avgRating, 1) : '0.0' }}</h2>
                         <div class="text-warning">
                             @for($i = 1; $i <= 5; $i++)
-                            <i class="fa fa-star{{ $i <= round($food->average_rating) ? '' : '-o' }}"></i>
+                            <span class="fa-stack" style="width: 1em;">
+                                <i class="far fa-star fa-stack-1x"></i>
+                                @if($i <= floor($avgRating))
+                                <i class="fas fa-star fa-stack-1x" style="color: #ffc107;"></i>
+                                @elseif($i == ceil($avgRating) && $avgRating > 0)
+                                <i class="fas fa-star-half-alt fa-stack-1x" style="color: #ffc107;"></i>
+                                @endif
+                            </span>
                             @endfor
                         </div>
+                        <small class="text-muted">{{ $totalReviews }} {{ Str::plural('review', $totalReviews) }}</small>
                     </div>
-                    <div>
-                        <p class="mb-0 text-muted">{{ $food->rating_count }} review{{ $food->rating_count > 1 ? 's' : '' }}</p>
+                    <div class="flex-grow-1">
+                        @for($i = 5; $i >= 1; $i--)
+                        @php
+                        $count = $ratingBreakdown->get($i, 0);
+                        $percentage = $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0;
+                        @endphp
+                        <div class="d-flex align-items-center mb-1">
+                            <small class="me-2 text-muted" style="width: 20px;">{{ $i }} <i class="fas fa-star" style="color: #ffc107; font-size: 10px;"></i></small>
+                            <div class="progress flex-grow-1" style="height: 8px; min-width: 100px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $percentage }}%;" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <small class="ms-2 text-muted" style="width: 30px;">{{ $count }}</small>
+                        </div>
+                        @endfor
                     </div>
                 </div>
-                @endif
 
                 @forelse($food->reviews()->with('user')->latest()->get() as $review)
                 <div class="card mb-3 border-0 shadow-sm">
@@ -114,9 +138,11 @@
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label">Rating</label>
-                                <div class="d-flex gap-2" id="starRating">
+                                <div class="rating" id="starRating">
                                     @for($i = 1; $i <= 5; $i++)
-                                    <i class="fa fa-star-o fa-lg text-muted rating-star" data-value="{{ $i }}" style="cursor: pointer;"></i>
+                                    <span class="rating-star" data-value="{{ $i }}" style="cursor: pointer; font-size: 1.5rem; color: #ccc; transition: color 0.2s;">
+                                        <i class="fa fa-star"></i>
+                                    </span>
                                     @endfor
                                 </div>
                                 <input type="hidden" name="rating" id="ratingValue" value="0" required>
@@ -151,7 +177,39 @@ document.querySelectorAll('.rating-star').forEach(function(star) {
         var value = parseInt(this.getAttribute('data-value'));
         document.getElementById('ratingValue').value = value;
         document.querySelectorAll('.rating-star').forEach(function(s, i) {
-            s.className = i < value ? 'fa fa-star fa-lg text-warning rating-star' : 'fa fa-star-o fa-lg text-muted rating-star';
+            var icon = s.querySelector('i');
+            if (i < value) {
+                s.style.color = '#ffc107';
+                icon.className = 'fa fa-star';
+            } else {
+                s.style.color = '#ccc';
+                icon.className = 'fa fa-star';
+            }
+        });
+    });
+    
+    star.addEventListener('mouseover', function() {
+        var value = parseInt(this.getAttribute('data-value'));
+        document.querySelectorAll('.rating-star').forEach(function(s, i) {
+            var icon = s.querySelector('i');
+            if (i < value) {
+                s.style.color = '#ffc107';
+                icon.className = 'fa fa-star';
+            }
+        });
+    });
+    
+    star.addEventListener('mouseout', function() {
+        var selectedValue = parseInt(document.getElementById('ratingValue').value) || 0;
+        document.querySelectorAll('.rating-star').forEach(function(s, i) {
+            var icon = s.querySelector('i');
+            if (i < selectedValue) {
+                s.style.color = '#ffc107';
+                icon.className = 'fa fa-star';
+            } else {
+                s.style.color = '#ccc';
+                icon.className = 'fa fa-star';
+            }
         });
     });
 });

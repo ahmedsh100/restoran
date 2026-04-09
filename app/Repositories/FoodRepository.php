@@ -23,7 +23,7 @@ class FoodRepository implements FoodRepositoryInterface
 
     public function findById(int $id, array $columns = ['*']): ?object
     {
-        return $this->model->find($id, $columns);
+        return $this->model->with('reviews')->find($id, $columns);
     }
 
     public function findByCategory(string $category, ?int $limit = null): Collection
